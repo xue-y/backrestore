@@ -1,0 +1,27 @@
+{
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    },
+    "name": "xue-y/backrestore",
+    "description": "mysql Backup and restore",
+    "license": "Apache-2.0",
+    "minimum-stability":"stable",
+    "authors": [
+        {
+            "name": "xue-y",
+            "email": "1922527784@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "backup\\": "backup/",
+            "import\\": "import/"
+        }
+    }
+}
