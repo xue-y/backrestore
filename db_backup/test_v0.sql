@@ -3,7 +3,7 @@
 -- PHP 运行方式：apache2handler
 -- PHP版本：5.5.38
 -- MySql版本-pdo：5.5.53-log
--- 生成日期：2018-10-01 16:45:47
+-- 生成日期：2018-10-02 11:08:08
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
