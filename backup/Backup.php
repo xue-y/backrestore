@@ -23,7 +23,7 @@ class Backup{
 	protected  $import_table_fu=" ##* ";// 导入数据表用于取得表名的分隔符
     protected  $back_file_fu="_v";
 
-    public function __construct($host='127.0.0.1',$db,$dbuser='',$dbpw='',$table=array(),$charset='utf8',$prot=3306)
+    public function __construct($host,$db,$dbuser,$dbpw,$table,$charset,$prot)
     {
         header("content-type:text/html;charset=$charset");
         set_time_limit(0);//无时间限制

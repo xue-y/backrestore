@@ -26,7 +26,7 @@ class Import {
     protected  $log_dir="./log/";
     protected  $log_file="./log/import_log.txt"; //日志目录---用于删除备份文件失败
 
-    public  function __construct($back_name,$host='127.0.0.1',$db='',$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true)
+    public  function __construct($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del)
     {
         if(empty($back_name))
         {
