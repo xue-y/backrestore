@@ -78,7 +78,7 @@ class MySql extends  Import{
 			mysql_query($drop_table) or die(mysql_error());
 		}
 
-		if($temp_table) // 如果存在还原前的数据表  更改的临时表名还原回去
+		if(!empty($temp_table)) // 如果存在还原前的数据表  更改的临时表名还原回去
 		{
 			$rename="";
 			//取得原数据的临时表名 还原数据
