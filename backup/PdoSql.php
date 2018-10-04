@@ -4,7 +4,7 @@
  * User: Administrator
  * Date: 18-4-25
  * Time: 上午8:52
- * pdo 备份数据库
+ * pdo 备份数据库 sql 格式
  */
 namespace backup;
 use PDO;
@@ -14,7 +14,7 @@ class PdoSql extends Backup{
     protected  $pdo; // pdo 类对象
 
     //连接数据库
-    protected  function conn()
+    public function conn()
     {
         try{
             $dsn='mysql:host='.$this->host.';port='.$this->prot.';dbname='.$this->db;
@@ -28,9 +28,9 @@ class PdoSql extends Backup{
             die("Error: " . $e->getMessage());
         }
     }
-	
+
 	// 取得mysql 版本号
-	protected function mysql_v()
+	public function mysql_v()
 	{
 		 $res=$this->pdo->query("select VERSION()");
          $version=$res->fetch(PDO::FETCH_NUM);
@@ -38,9 +38,9 @@ class PdoSql extends Backup{
 		 $res=null;
 		 return $sql_head;
 	}
-
+	
     // 取得所有表名 并且判断数据表是否存在
-    protected function table_name()
+    public function table_name()
     {
         // 取得数据库中所有的表
         $sql="show tables";
@@ -60,7 +60,7 @@ class PdoSql extends Backup{
     }
 
     // 取得表结构数据(语句)---- 没有使用字符转义
-    protected function table_structure($table_name)
+    public function table_structure($table_name)
     {
         $table_sql="show create table `".$table_name."`";
         $result=$this->pdo->query($table_sql);
@@ -69,17 +69,18 @@ class PdoSql extends Backup{
     }
 
     // 查询表数据----根据表名查询表数据
-    protected function select_insert($table_name)
+    public function select_insert($table_name)
     {
         $table_data=array();
         $sql="select * from `".$table_name."`";
         $resource=$this->pdo->query($sql);
         $table_data=$resource->fetchAll(PDO::FETCH_ASSOC);
+		$resource=null;
         return $table_data;
     }
 
     // 取得字段类型
-    protected function field_type($table_name)
+    public function field_type($table_name)
     {
         $field_type="show full fields from `".$table_name.'`'; // 取得字段类型
         $field_type_r=$this->pdo->query($field_type);
@@ -91,7 +92,7 @@ class PdoSql extends Backup{
     }
 
     // 锁表
-    protected function lock_table($table_name)
+    public function lock_table($table_name)
     {
         // 锁表--- 写入受限制，读不限制
         $lock="lock table ".$table_name." read";
@@ -100,7 +101,7 @@ class PdoSql extends Backup{
     }
 
     //解表
-    protected function unlock_table($lock_re)
+    public function unlock_table($lock_re)
     {
         $unlock="unlock tables";
         $unlock_re=$this->pdo->query($unlock);

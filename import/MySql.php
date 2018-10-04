@@ -4,11 +4,11 @@
  * User: Administrator
  * Date: 18-4-28
  * Time: 下午5:14
+ * mysql 还原、导入数据
  */
-
 namespace import;
 
-class MySql extends  Import{
+class MySql extends  Import {
 
     // 连接数据库
     protected function conn()
@@ -17,11 +17,11 @@ class MySql extends  Import{
         // 选择使用哪个数据库
         mysql_select_db ( $this->db, $this->conn) or die(mysql_error());
         // 数据库编码方式
-        mysql_query ( 'SET NAMES ' . $this->charset, $this->conn );
+        mysql_query ( 'SET NAMES ' .$this->charset, $this->conn );
     }
 
     // 取得数据库中所有的表
-    protected function old_table()
+    public function old_table()
     {
         $sql="show tables";
         $table_result=mysql_query($sql);
@@ -46,7 +46,7 @@ class MySql extends  Import{
      * @parem $rename 修改表名的字符串
      * @return void
      * */
-    protected function temp_table_exec($rename)
+    public function temp_table_exec($rename)
     {
         try{
             $sql=" rename table ".substr($rename,0,-1);
@@ -78,7 +78,7 @@ class MySql extends  Import{
 			mysql_query($drop_table) or die(mysql_error());
 		}
 
-		if(!empty($temp_table)) // 如果存在还原前的数据表  更改的临时表名还原回去
+		if($temp_table) // 如果存在还原前的数据表  更改的临时表名还原回去
 		{
 			$rename="";
 			//取得原数据的临时表名 还原数据
@@ -89,8 +89,8 @@ class MySql extends  Import{
 			}
 			$reduction_table=" rename table ".substr($rename,0,-1);
 			mysql_query($reduction_table) or die("更改原数据表名为临时表名失败".PHP_EOL.mysql_error());
-		}
-		exit(mysql_error());
+		}		
+
 	}
 
 
@@ -99,11 +99,13 @@ class MySql extends  Import{
      * @parem $table_name 执行本次还原的数据表
      * @parem $temp_table 更改的原表的临时表名
      * */
-    protected function sql_exec($sql_arr,$table_name,$temp_table)
+    public function sql_exec($sql_arr,$table_name,$temp_table)
     {
         // 使用 foreach 循环-- 防止一次执行太多sql 程序卡死
         foreach($sql_arr as $k=>$v)
         {
+			//$v=$sql_arr; //如果每个分卷小于 2MB 可以去掉 foreach 循环
+			
             // 如果 本券是以 转储表结构 开头，$v  为空
             if(empty($v))
             {
@@ -121,17 +123,25 @@ class MySql extends  Import{
 			$new_v=explode($sql_fu,$v);
 			$new_v=array_filter($new_v);
 			
-			
 			if(!empty($new_v))
 			{
 				foreach($new_v as $kk=>$vv)
 				{
+					// /*! 开头 */结尾的跳过 默认phpmyAdmin 导出数据时的顶部 底部跳过
+
+					/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */  //;
+					/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */ //;
+					/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */ //;
+					
+					if(preg_match("/\/\*\![\s\S]+\*\//",$vv))
+					{
+						continue;
+					}
 					$new_vv=$vv.$sql_fu;
-					echo "<pre>";
-				
-					$bool=mysql_query($new_vv);  // 失败返回false  执行失败
-						echo "</pre>";
-					if(!$bool || $bool===false)
+					
+					$bool=mysql_query($new_vv) or die(mysql_error());  // 失败返回false  执行失败
+						
+					if(!$bool || $bool==false)
 					{ 
 					  $this->sql_error($table_name,$temp_table); 
 					}
@@ -139,21 +149,22 @@ class MySql extends  Import{
 			}else
 			{
 				$bool=mysql_query($v);  // 失败返回false  执行失败
+				if(!$bool || $bool==false)
+				{ 
+					$this->sql_error($table_name,$temp_table); 
+				}
 			}
+        }//---------------------------------------还原所有一个分卷中的数据
 			
-			if(!$bool || $bool==false)
-			{ 
-				 $this->sql_error($table_name,$temp_table); 
-			}
-        }
     }
 	
     // 还原成功后删除 原数据临时表--如果存在临时表
-    protected function del_temp_table($temp_table)
+    public function del_temp_table($temp_table)
     {
         //删除原数据的临时表名
         $drop_table=" DROP TABLE `".implode("`,`",$temp_table)."`";
         $table_num=mysql_query($drop_table);
+		
         if(!$table_num || $table_num==false)
         {
             exit("删除原数据失败 ".PHP_EOL.mysql_error());
@@ -167,3 +178,4 @@ class MySql extends  Import{
     }
 
 }
+

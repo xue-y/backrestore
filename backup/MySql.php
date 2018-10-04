@@ -11,24 +11,24 @@ namespace backup;
 class MySql  extends Backup{
 
     // 连接数据库
-    protected function conn()
+    public function conn()
     {
         $this->conn = @mysql_connect ( $this->host, $this->dbuser, $this->dbpw ) or die(mysql_error());
         // 选择使用哪个数据库
-        mysql_select_db( $this->db, $this->conn) or die(mysql_error());
+        mysql_select_db ( $this->db, $this->conn) or die(mysql_error());
         // 数据库编码方式
-        mysql_query( 'SET NAMES ' . $this->charset, $this->conn );
+        mysql_query ( 'SET NAMES ' . $this->charset, $this->conn );
     }
 	
 	// 取得mysql 版本号
-	protected function mysql_v()
+	public function mysql_v()
 	{
 	   $sql_head="-- MySql版本-mysql：".mysql_get_server_info().PHP_EOL;
 	   return $sql_head;
 	}
-	
+
     // 取得所有表名
-    protected function table_name()
+    public function table_name()
     {
         $table_name=array();
         // 如果备份整个数据库
@@ -56,7 +56,7 @@ class MySql  extends Backup{
     }
 
     // 取得表结构数据(语句)
-    protected function table_structure($table_name)
+    public function table_structure($table_name)
     {
         $table_sql="show create table `".$table_name."`";
         $result=mysql_query($table_sql);
@@ -66,7 +66,7 @@ class MySql  extends Backup{
     }
 
     // 查询表数据----根据表名查询表数据
-    protected function select_insert($table_name)
+    public function select_insert($table_name)
     {
         $table_data=array();
         $sql="select * from `".$table_name."`";
@@ -79,7 +79,7 @@ class MySql  extends Backup{
     }
 
     // 取得字段类型
-    protected function field_type($table_name)
+    public function field_type($table_name)
     {
         $field_type="show full fields from `".$table_name.'`'; // 取得字段类型
         $field_type_r=mysql_query($field_type);
@@ -92,16 +92,14 @@ class MySql  extends Backup{
     }
 
     // 锁表
-    protected function lock_table($table_name)
+    public function lock_table($table_name)
     {
-        // 锁表--- 写入受限制，读不限制
         $lock="lock table ".$table_name." read";
         $lock_re=mysql_query($lock);
-        return $lock_re;
     }
 
     //解表
-    protected function unlock_table($lock_re)
+    public function unlock_table($lock_re)
     {
         $unlock="unlock tables";
         $unlock_re=mysql_query($unlock);

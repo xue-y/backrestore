@@ -6,8 +6,10 @@ namespace backup;
 
 require "../vendor/autoload.php";
 
-//$table_name=["dede_archives"];  // php 5.4+
-$table_name=array("dede_admin","dede_addonsoft"); // php 5.4- 备份指定表
-// 提示文字 在 Backup.php 300 line
+
+//$table_name=["dede_archives"]; php 5.4+
+$table_name=array("ecs_account_log","ecs_ad");//php 5.4-
+
+$back=new BackData();
 //$host='127.0.0.1',$db,$dbuser='',$dbpw='',$table=array(),$charset='utf8',$prot=3306
-new BackData('127.0.0.1','t','root','admin',$table_name);
+$back->back_exec('127.0.0.1','shop','root','admin',$table_name);

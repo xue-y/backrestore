@@ -4,20 +4,12 @@
  * User: Administrator
  * Date: 18-4-27
  * Time: 下午3:19
- * pdo 还原pdo 
+ * pdo 还原、导入数据
  */
-
 namespace import;
 use PDO;
 
-include "Import.php";
-
 class PdoSql extends Import {
-
-    //需要还原的表名
-    //把数据库中个原有表与要还原的表相同的表名 更改名称--temp_表名
-    //导入成功 删除 temp_表名
-    //导入失败 删除导入的表名
 
     protected  $pdo; // pdo 类对象
 
@@ -38,7 +30,7 @@ class PdoSql extends Import {
     }
 
     // 取得数据库中所有的表
-    protected  function old_table()
+    public function old_table()
     {
         $sql="show tables";
         $table_result=$this->pdo->query($sql);
@@ -51,7 +43,7 @@ class PdoSql extends Import {
      * @parem $rename 修改表名的字符串
      * @return void
      * */
-    protected function temp_table_exec($rename)
+    public function temp_table_exec($rename)
     {
         try{
             $sql=" rename table ".substr($rename,0,-1);
@@ -72,11 +64,13 @@ class PdoSql extends Import {
      * @parem $table_name 执行本次还原的数据表
      * @parem $temp_table 更改的原表的临时表名
      * */
-    protected function sql_exec($sql_arr,$table_name,$temp_table)
+    public function sql_exec($sql_arr,$table_name,$temp_table)
     {
         // 使用 foreach 循环-- 防止一次执行太多sql 程序卡死
         foreach($sql_arr as $k=>$v)
         {
+			//$v=$sql_arr;//如果每个分卷小于 2MB 可以去掉 foreach 循环
+			
             // 如果 本券是以 转储表结构 开头，$v  为空
             if(empty($v))
             {
@@ -86,6 +80,7 @@ class PdoSql extends Import {
 		//	$v = stripslashes($v); // 备份的时候转义了字符，转义回去  语句错误不转义数据也可以正常访问
 			
             $bool=$this->pdo->exec($v); // 执行成功返回 0 ，失败返回1
+			
             $error=$this->pdo->errorInfo();
 
             if($error[0]!='0000') //if($bool==1 || $bool)
@@ -105,7 +100,7 @@ class PdoSql extends Import {
 					}
 				}
 
-                if(!empty($temp_table))  // 如果存在还原前的数据表  更改的临时表名还原回去
+                if($temp_table)  // 如果存在还原前的数据表  更改的临时表名还原回去
                 {
                     $rename="";
                     //取得原数据的临时表名 还原数据
@@ -125,11 +120,11 @@ class PdoSql extends Import {
                 exit("错误sql语句 ".PHP_EOL.$error[2]);
                 break;
             }
-        } //---------------------------------------还原所有一个分卷中的数据
+       } //---------------------------------------还原所有一个分卷中的数据
     }
 
     // 还原成功后删除 原数据临时表--如果存在临时表
-    protected function del_temp_table($temp_table)
+    public function del_temp_table($temp_table)
     {
         //删除原数据的临时表名
         $drop_table=" DROP TABLE `".implode("`,`",$temp_table)."`";
@@ -140,26 +135,11 @@ class PdoSql extends Import {
             exit("删除原数据失败 ".PHP_EOL.$error[2]);
         }
     }
-	
-	    // 锁表
-    protected function lock_table($table_name)
-    {
-        $lock="lock table ".$table_name." read";
-        $lock_re=mysql_query($lock);
-    }
-
-    //解表
-    protected function unlock_table($lock_re)
-    {
-        $unlock="unlock tables";
-        $unlock_re=mysql_query($unlock);
-        // 释放锁表 解表
-        $unlock_re=$lock_re=null;
-    }
 
     // 释放资源
     public function __destruct()
     {
         $this->pdo=null;
     }
+
 }
