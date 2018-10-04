@@ -245,7 +245,6 @@ class Import {
         $all_table=$this->old_table(); // 取得数据库中的所有表名----------------------调用的子类方法
 
         $temp_table=$this->temp_table($all_table,$table_name); // 取得数据库中的原表名的临时表名
-		//$temp_table=false;  // 注释掉临时命名时间减少1/12 左右
 		
         if(intval($is_files[1])===0)
         {
