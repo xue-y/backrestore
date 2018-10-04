@@ -3,11 +3,11 @@
 	集成环境phpStudy，其他环境未测试
 
 ### 备份还原数据文件说明
-    备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在Backup.php 的属性中设置
-    备份数据如果是一卷命名为：文件名_自定义标识+0.sql,例如 cms_v0.sql
-    如果是多卷命名为：文件名_自定义标识+数字第几卷.sql,例如 cms_v1.sql，cms_v2.sql，依次类推
-    还原数据时如果检测到有 cms_v0.sql 文件只会还原一卷
-    如果没有检测到cms_v0.sql就查找 cms_v1.sql，如果检测到有cms_v1.sql文件，就会还原cms_v1.sql，cms_v2.sql…… 文件
+    - 备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在Backup.php 的属性中设置
+    - 备份数据如果是一卷命名为：文件名_自定义标识+0.sql,例如 cms_v0.sql
+    - 如果是多卷命名为：文件名_自定义标识+数字第几卷.sql,例如 cms_v1.sql，cms_v2.sql，依次类推
+    - 还原数据时如果检测到有 cms_v0.sql 文件只会还原一卷
+    - 如果没有检测到cms_v0.sql就查找 cms_v1.sql，如果检测到有cms_v1.sql文件，就会还原cms_v1.sql，cms_v2.sql…… 文件
 
 ### backup php 备份mysql  数据库
     |---当前操作用户对备份目录有创建删除权限 数据表有创建删除的权限
