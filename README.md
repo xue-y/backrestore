@@ -5,11 +5,11 @@
 
 ### 环境版本
 	本人测试环境 php:5.5.38 /5.6.27-nts/7.0.12-nts; mysql: 5.5.53 ; apache: Apache/2.4.23 (Win32)
-	集成环境phpStudy，其他环境未测试
-	支持mysql，pdo 两种方式备份还原，php5.5 以上的版本建议开启pdo扩展，使用pdo 备份还原数据
+	集成环境 phpStudy，其他环境未测试
+	支持 mysql，pdo 两种方式备份还原，php5.5 以上的版本建议开启pdo扩展，使用 pdo 备份还原数据
 
 ### 备份还原数据文件说明
-    |---备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在Backup.php 的属性中设置
+    |---备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在 Backup.php 的属性中设置
     |---备份数据如果是一卷命名为：文件名_自定义标识+0.sql,例如 cms_v0.sql
     |---如果是多卷命名为：文件名_自定义标识+数字第几卷.sql,例如 cms_v1.sql，cms_v2.sql，依次类推
     |---还原数据时如果检测到有 cms_v0.sql 文件只会还原一卷
