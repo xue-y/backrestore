@@ -4,8 +4,9 @@
     第一卷开头的 sql 注释信息与下面的 sql 语句之间 也要使用 Import.php 下的 table_fu()函数 分割符分割
 
 ### 环境版本
-	本人测试环境 php:5.538 /5.6.27-nts/7.0.12-nts; mysql: 5.5.53 ; apache: Apache/2.4.23 (Win32)
+	本人测试环境 php:5.5.38 /5.6.27-nts/7.0.12-nts; mysql: 5.5.53 ; apache: Apache/2.4.23 (Win32)
 	集成环境phpStudy，其他环境未测试
+	支持mysql，pdo 两种方式备份还原，php5.5 以上的版本建议开启pdo扩展，使用pdo 备份还原数据
 
 ### 备份还原数据文件说明
     |---备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在Backup.php 的属性中设置
