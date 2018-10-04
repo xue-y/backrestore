@@ -15,16 +15,17 @@ Class ImportData {
      * @paerm $charset     数据库字符集
      * @parem $prot        数据库端口
      * @parem $is_del      还原完成后是否删除备份文件，默认true 删除
+     * @parem $table_head  是否忽略还原文件标注的表名
      * */
-    function __construct($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true)
+    function __construct($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true,$table_head=true)
     {
         if(extension_loaded("pdo"))
         {
-            $backup=new PdoSql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del);
+            $backup=new PdoSql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head);
 
         }else
         {
-            $backup=new MySql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del);
+            $backup=new MySql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head);
         }
         // sql_insert 是父类下的方法
         $backup->sql_insert(); // 执行写入操作【还原】

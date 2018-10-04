@@ -25,8 +25,9 @@ class Import {
     protected  $back_file_fu="_v";
     protected  $log_dir="./log/";
     protected  $log_file="./log/import_log.txt"; //日志目录---用于删除备份文件失败
+    protected  $table_head;// 是否忽略标注的表名,默认true读取第一卷开头标注的表名，false 不读取
 
-    public  function __construct($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del)
+    public  function __construct($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head)
     {
         if(empty($back_name))
         {
@@ -49,6 +50,9 @@ class Import {
         $this->conn(); // 初始化调用连接数据库
 
         $this->log_dir();// 创建日志文件夹
+
+        $this->table_head=$table_head; // 统计表名称
+
     }
 
     // 取得要还原的备份文件名
@@ -241,10 +245,16 @@ class Import {
 
         $table_fu=$this->table_fu(); // sql 文件表与表之间的分割符
 
-        $table_name=$this->table_name();   // 取得这次插入的表名
-        $all_table=$this->old_table(); // 取得数据库中的所有表名----------------------调用的子类方法
-
-        $temp_table=$this->temp_table($all_table,$table_name); // 取得数据库中的原表名的临时表名
+        if($this->table_head) // 是否忽略标注的表名
+        {
+            $table_name=$this->table_name();   // 取得这次插入的表名
+            $all_table=$this->old_table(); // 取得数据库中的所有表名----------------------调用的子类方法
+            $temp_table=$this->temp_table($all_table,$table_name); // 取得数据库中的原表名的临时表名
+        }else
+        {
+            $table_name=array();
+            $temp_table=array();
+        }
 		
         if(intval($is_files[1])===0)
         {
@@ -252,8 +262,10 @@ class Import {
             $first_file=$this->back_name.$this->back_file_fu."0.sql";;
             $fileCont = file_get_contents($this->back_dir.$first_file);
             $sql_arr=explode($table_fu,$fileCont);
-            // 去除备份文件头标识
-            array_splice($sql_arr,0,1);
+
+            // 去除备份文件头标识--- 一般为sql注释信息
+             array_splice($sql_arr,0,1);
+
             // 执行还原
             $this->sql_exec($sql_arr,$table_name,$temp_table); //----------------------调用的子类方法
 
