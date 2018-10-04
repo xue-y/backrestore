@@ -7,6 +7,14 @@
     如果要还原的数据与数据库中的表名同名，还原的数据表语句前又没有drop table 语句，还原会失败
     第一卷开头的 sql 注释信息与下面的 sql 语句之间 也要使用 Import.php 下的 table_fu() 函数 分割符分割
 
+    **1.0.0 版本README.md 备份文件 -- 文件说明 --  文件名错误**
+    backup/BackExec.php 名称为 backup/dome.php 测试调用文件;
+
+    **1.0.0 版本README.md 还原文件 -- 文件说明 --  文件名错误**
+    import/BackExec.php 名称为 import/dome.php 测试调用文件;
+    import/import.php   import文件夹中文件的名称为  import/Import.php
+    import/BackDate.php import文件夹中文件的名称为  import/ImportData.php
+
 ### 环境版本
 	本人测试环境 php:5.5.38 /5.6.27-nts/7.0.12-nts; mysql: 5.5.53 ; apache: Apache/2.4.23 (Win32)
 	集成环境 phpStudy，其他环境未测试
@@ -65,8 +73,8 @@
 	|---> 使用函数调用
 
 #### 文件说明
-	|---import.php 调用父类【基类】
+	|---Import.php 调用父类【基类】
 	|---PdoSql.php pdo类还原
 	|---MySql.php  mysql类还原
-	|---BackData.php 还原数据实例化类
+	|---ImportData.php 还原数据实例化类
 	|---dome.php 调用测试文件
