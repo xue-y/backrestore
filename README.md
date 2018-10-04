@@ -6,7 +6,7 @@
     如果使用其他工具导出的数据，第一卷的开头如果没有标注的表名，在调用 ImportData() 最后一个参数为false即可；
     如果要还原的数据与数据库中的表名同名，还原的数据表语句前又没有drop table 语句，还原会失败
     第一卷开头的 sql 注释信息与下面的 sql 语句之间 也要使用 Import.php 下的 table_fu() 函数 分割符分割
-
+   
 **1.0.0 版本README.md 备份文件 -- 文件说明 --  文件名错误**
     backup/BackExec.php 名称为 backup/dome.php 测试调用文件;
 
