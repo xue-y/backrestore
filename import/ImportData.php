@@ -23,7 +23,6 @@ class ImportData{
      * @paerm $charset     数据库字符集
      * @parem $prot        数据库端口
      * @parem $is_del      还原完成后是否删除备份文件，默认true 删除
-     * @parem $table_head  是否忽略还原文件标注的表名
      * */
 	public function import_exec($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true)
 	{
