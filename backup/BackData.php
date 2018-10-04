@@ -11,7 +11,6 @@ namespace backup;
 Class BackData{
 
     /** 执行备份数据
-     * @parem $back_name   还原的sql 文件名前缀 例如还原数据文件 test_v0 ,直接写test
      * @parem $host        主机
      * @parem $db          要还原的数据库
      * @parem $dbuser      数据库用户名
