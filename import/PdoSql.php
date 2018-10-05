@@ -78,30 +78,29 @@ class PdoSql extends Import {
             }
 			
 		//	$v = stripslashes($v); // 备份的时候转义了字符，转义回去  语句错误不转义数据也可以正常访问
-			
             $bool=$this->pdo->exec($v); // 执行成功返回 0 ，失败返回1
-			
-            $error=$this->pdo->errorInfo();
 
+            $error=$this->pdo->errorInfo();
             if($error[0]!='0000') //if($bool==1 || $bool)
             {
-                // 重新取得数据库中的所有表名
-                $all_table=$this->old_table();
-				if($all_table)
-				{
-					 // 取得已经插入的表名执行删除
-					$insert_table=array_intersect($all_table,$table_name);
-					$drop_table=" DROP TABLE `".implode("`,`",$insert_table)."`";
-					$this->pdo->exec($drop_table);
-					$error=$this->pdo->errorInfo();
-					if($error[0]!='0000')
-					{
-						exit("清理新插入的数据失败".PHP_EOL.$error[2]);
-					}
-				}
-
-                if($temp_table)  // 如果存在还原前的数据表  更改的临时表名还原回去
+                // 如果存在还原前的数据表  更改的临时表名还原回去
+                if(!empty($table_name) && !empty($temp_table))
                 {
+                    // 重新取得数据库中的所有表名  数据库中的原表名+ 已插入表名
+                    $all_table=$this->old_table();
+                    if(!empty($all_table))
+                    {
+                        // 取得已经插入的表名执行删除
+                        $insert_table=array_intersect($all_table,$table_name);
+                        $drop_table=" DROP TABLE `".implode("`,`",$insert_table)."`";
+                        $this->pdo->exec($drop_table);
+                        $error=$this->pdo->errorInfo();
+                        if($error[0]!='0000')
+                        {
+                            exit("清理新插入的数据失败".PHP_EOL.$error[2]);
+                        }
+                    }
+
                     $rename="";
                     //取得原数据的临时表名 还原数据
                     foreach($temp_table as $kk=>$vv)
@@ -119,7 +118,8 @@ class PdoSql extends Import {
                 }
                 exit("错误sql语句 ".PHP_EOL.$error[2]);
                 break;
-            }
+            }//------------------------------------ 如果出现错误，如果sql 语法错误有时程序会直接停止运行，不会回滚数据
+
        } //---------------------------------------还原所有一个分卷中的数据
     }
 

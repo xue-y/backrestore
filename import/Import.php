@@ -26,8 +26,9 @@ class Import {
     protected  $log_dir="./log/";
     protected  $log_file="./log/import_log.txt"; //日志目录
 	public	    $back_name;	// 要还原的备份名前缀
+    public     $table_head;  // 是否忽略标注表名
 
-    public function __construct($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del)
+    public function __construct($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head)
     {
         if(empty($back_name))
         {
@@ -47,6 +48,7 @@ class Import {
         $this->back_file=$this->read_backdir(); // 备份文件数组
         $this->conn(); // 初始化调用连接数据库
         $this->log_dir();// 创建日志文件夹
+        $this->table_head=$table_head;
     }
 
     // 取得要还原的备份文件名

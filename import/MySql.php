@@ -70,7 +70,7 @@ class MySql extends  Import {
 	{
 		// 重新取得数据库中的所有表名
 		$all_table=$this->old_table();
-		if($all_table)
+		if(!empty($all_table))
 		{
 			// 取得已经插入的表名执行删除
 			$insert_table=array_intersect($all_table,$table_name);
@@ -78,7 +78,7 @@ class MySql extends  Import {
 			mysql_query($drop_table) or die(mysql_error());
 		}
 
-		if($temp_table) // 如果存在还原前的数据表  更改的临时表名还原回去
+		if(!empty($temp_table)) // 如果存在还原前的数据表  更改的临时表名还原回去
 		{
 			$rename="";
 			//取得原数据的临时表名 还原数据
@@ -141,7 +141,7 @@ class MySql extends  Import {
 					
 					$bool=mysql_query($new_vv) or die(mysql_error());  // 失败返回false  执行失败
 						
-					if(!$bool || $bool==false)
+					if((!$bool || $bool==false) && !empty($table_name) && !empty($temp_table))
 					{ 
 					  $this->sql_error($table_name,$temp_table); 
 					}
@@ -149,7 +149,7 @@ class MySql extends  Import {
 			}else
 			{
 				$bool=mysql_query($v);  // 失败返回false  执行失败
-				if(!$bool || $bool==false)
+                if((!$bool || $bool==false) && !empty($table_name) && !empty($temp_table))
 				{ 
 					$this->sql_error($table_name,$temp_table); 
 				}

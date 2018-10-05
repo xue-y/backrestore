@@ -23,16 +23,17 @@ class ImportData{
      * @paerm $charset     数据库字符集
      * @parem $prot        数据库端口
      * @parem $is_del      还原完成后是否删除备份文件，默认true 删除
+     * @parem $table_head  是否存在标注表名，默认true，false 忽略第一卷的开头标注的表名
      * */
-	public function import_exec($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true)
+	public function import_exec($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$charset='utf8',$prot=3306,$is_del=true,$table_head=true)
 	{
 		if(!extension_loaded("pdo"))
 		{
-			$this->import=new PdoSql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del);
+			$this->import=new PdoSql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head);
 	
 		}else
 		{
-			$this->import=new MySql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del);
+			$this->import=new MySql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del,$table_head);
 		}
 		$this->sql_insert(); // 执行写入操作【还原】
 	}
@@ -74,11 +75,17 @@ class ImportData{
 
         $table_fu=$this->import->table_fu(); // sql 文件表与表之间的分割符
 
-        $table_name=$this->import->table_name();   // 取得这次插入的表名
-        $all_table=$this->import->old_table(); // 取得数据库中的所有表名
+        if($this->import->table_head)
+        {
+            $table_name=$this->import->table_name();   // 取得这次插入的表名
+            $all_table=$this->import->old_table(); // 取得数据库中的所有表名
+            $temp_table=$this->temp_table($all_table,$table_name); // 取得数据库中的原表名的临时表名
+        }
+        else
+        {
+            $table_name=$temp_table=array();
+        }
 
-        $temp_table=$this->temp_table($all_table,$table_name); // 取得数据库中的原表名的临时表名
-		//$temp_table=false;  // 如果不批量从新命名还原时间可以减少1/3--1/4 
 		
         if(intval($is_files[1])===0)
         {
