@@ -43,7 +43,8 @@
 	|---> 优点：类与类之间的耦合性降低了
 	|---> 使用类调用
 
-#### 文件说明
+#### 文件说明   
+	backup/    
 	|---backup.php 调用父类【基类】
 	|---PdoSql.php pdo类备份
 	|---MySql.php  mysql类备份
@@ -82,6 +83,7 @@
 	|---> 使用类调用
 
 #### 文件说明
+	import/    
 	|---Import.php 调用父类【基类】
 	|---PdoSql.php pdo类还原
 	|---MySql.php  mysql类还原
