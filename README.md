@@ -1,91 +1,82 @@
-### 原生 PHP 备份还原 MySql 数据库
-    支持 MySql，PDO 两种方式备份还原
-    php5.5 以上的版本建议开启pdo扩展，使用 pdo 备份还原数据
-    备份文件夹 db_backup、import/log 文件要有读写权限
+### 备份还原数据库
+重构代码，提示文件名不支持中文名，中文可能乱码或压缩文件失败  
+数据库使用 PDO 连接，不再支持 MySql 连接  
+备份文件名定义 `Backup`  类中 `$this->dir_file_name` 属性定义，默认使用 年月日时(2019081719)   
+备份文件目录` Common` 类中 `$this->config['back_dir']`属性定义
+公共配置项 ` Common` 类中 `$this->config`
+备份文件配置项 `Backup`  类中 `$this->back_config`  
+还原文件配置项 `Import` 类中 `$this->import_config` 
+ 
+**版本**  
+测试PHP版本7.0.12，其他版本未测试; 建议PHP版本5.5以上
 
-### 环境版本
-	本人测试环境 php:5.5.38 /5.6.27-nts/7.0.12-nts; mysql: 5.5.53 ; apache: Apache/2.4.23 (Win32)
-	集成环境 phpStudy，其他环境未测试
 
-### 相比 2.0.0 版本，还原数据添加忽略标注表名
-    如果使用其他工具导出的数据，第一卷的开头如果没有标注的表名，在调用 ImportData->import_exec() 时 $table_head 最后一个参数为false即可；
-    如果要还原的数据与数据库中的表名同名，还原的数据表语句前又没有 drop table 语句，还原可能会失败
-    第一卷开头的 sql 注释信息与下面的 sql 语句之间 也要使用 Import.php 下的 table_fu() 函数 分割符分割;
+#### 数据库配置项-----必传值
+    $config=[
+          'db'  =>  'web',           // 数据库名称    
+          'host'=>  '127.0.0.1',    // 主机
+          'dbuser'=>'root',         // 数据库用户名称
+          'dbpw'=>  'root',        // 数据库密码
+          'charset' =>'utf8',      // 字符集
+          // 可以添加自定义配置项
+          // 公共配置项
+          'file_delimiter'=>'_',     // 分卷分割符,如果修改其他符号，文件名匹配正则需要修改
+          'file_extension'=>"sql",  // 备份文件后缀名
+          'compress_file_extension'=>'zip',// 压缩文件后缀
+          'import_lock_file'=>'import_lock_file.txt',// 导入锁文件名
+          'backup_lock_file'=>'backup_lock_file.txt',//备份锁文件
+          'back_dir'=>'./backup/',	 // 备份文件路径，备份
+          // 备份配置项
+          'subsection'=>5,			 // 分卷大小，单位MB
+          'min_subsection'=>2,       // 最小分卷数
+          'max_subsection'=>50,       // 最大分卷数
+          'compress'=> false,		 // 是否压缩，默认不压缩
+          'data_limit'=>10,           // 表数据每10 条统计一次是否达到分卷字数，如果为0表数据中不判断
+          'charset' =>'utf8',      // 字符集
+          // 还原配置项
+          'del_file'=>true,			// 还原完数据库是否删除备份文件,默认删除
+          'read_size'=>8192       // 一次读取文件字节个数
+    ];
+    
 
-    忽略标注表名：如果数据还原失败，数据无法回滚；
-    在1.0.1版本中忽略标注表名：如果数据还原失败，数据无法回滚；
+#### 备份
+默认分卷大小 5MB   
+分卷计算默认是10 条数据统计一次分卷大小，如果设置为 0 ,表数据中不统计分卷大小，每卷可能会超出设置的分卷大小
+$config 数据库配置信息
+$table 要备份的表名，备份整个数据库 null，备份指定前缀的数据表(参数是字符串)，备份指定表名的数据表(参数数组形式)  
+ 
+    $exec_sql=new Backup($config);  
+    $table=[];     
+    $exec_sql->wirteFile($table);`
 
-### 修正错误
-    修正以上版本 READNE.md 文件中 import 还原数据库(文件) 存放目录为 import 同级目录 db_backup 文件夹
 
-### 备份/还原文件目录
-    备份、还原数据文件存放 db_backup 文件夹
-    备份文件夹可以通过 backup/Backup.php  属性 $back_dir 修改 备份文件存放位置
-    还原导入数据文件夹可以通过 import/Import.php  属性 $back_dir 修改还原文件存放位置
+#### 还原
+默认一次读取文件字节个数 8KB
+ * 还原数据文件路径，还原文件名与路径相同
+ * 例如还原文件路径是 ./backup/20190811015/
+ * 配置文件所在路径 config['back_dir']='./backup/'，readFile('20190811015'),参数是需要还原的文件夹名称
+ * 还原文件会自动查找下类文件：
+ * ./backup/20190811015/20190811015_0.sql
+ * ./backup/20190811015/20190811015_1.sql
+ * ./backup/20190811015/20190811015.zip
+ * 如果既有压缩文件也有sql文件会还原20190811015/20190811015_0.sql  20190811015/20190811015_1.sql
+ * 压缩文件20190811015/20190811015.zip不会执行还原操作
+ * 如果需要还原(导入)额外数据表，在./backup/20190811015/ 文件夹下放 20190811015_1.zip ,20190811015_2.zip
+ * 压缩包即可，压缩包文件名一致，下标从1 开始；
+ * 压缩包里面的文件与文件名一致，例如：20190811015_1.zip 压缩包文件有 20190811015_0.sql  20190811015/20190811015_1.sql，下标从0 开始  
+ 
+ $config 数据库配置项  
+ $file_dir 还原文件夹名称
+ 
+    $file_dir='2019081719'
+    $import_sql=new Import($config);
+    $import_sql->readFile('2019081719');
 
-### 示例 sql 文件：
-    标注表名、表与表直接的分割示例    db_backup/xxx.sql 文件
+#### 优化修复表
+$config 数据库配置项  
+$table  要操作的表名，操作整个数据库 null，操作指定前缀的数据表(参数是字符串)，操作指定表名的数据表(参数数组形式)  
 
-### 备份还原数据文件说明
-    |---备份文件大小可以通过 Backup.php 中 $size 设置，默认2MB,其他设置也可在 Backup.php 的属性中设置
-    |---备份数据如果是一卷命名为：文件名_自定义标识+0.sql,例如 cms_v0.sql
-    |---如果是多卷命名为：文件名_自定义标识+数字第几卷.sql,例如 cms_v1.sql，cms_v2.sql，依次类推
-    |---还原数据时如果检测到有 cms_v0.sql 文件只会还原一卷
-    |---如果没有检测到cms_v0.sql就查找 cms_v1.sql，如果检测到有cms_v1.sql文件，就会还原cms_v1.sql，cms_v2.sql…… 文件
-
-### backup/ 备份mysql  数据库
-    |---当前操作用户对备份目录有创建删除权限 数据表有创建删除的权限
-    |---备份文件名默认 数据库名为前缀，如果备份文件夹下存在相同文件名自动覆盖，备份前请查看备份文件是否存在相同前缀文件名
-    |---如果想修改备份文件命名前缀 请在BackData.php // 备份文件名可以自定义  下2行处修改
-
-#### backup_2 版本
-	|---> 缺点：子类与父类中的函数属性调用调的地方都为 public 类型
-	|---> 优点：类与类之间的耦合性降低了
-	|---> 使用类调用
-
-#### 文件说明   
-	backup/    
-	|---backup.php 调用父类【基类】
-	|---PdoSql.php pdo类备份
-	|---MySql.php  mysql类备份
-	|---BackData.php 备份数据实例化类
-	|---dome.php 调用测试文件
-
-### import/ 还原 mysql  数据库
-    |---当前操作用户对备份目录、日志目录有创建删除权限 数据表有创建删除的权限
-    |---还原数据库文件需放在 import 同级目录 db_backup/ 目录下,还原文件名(按照备份文件名格式)文件名_自定义标识+数字第几卷.sql,例如 cms_v0.sql
-    |---如果数据还原失败，数据回滚到没有还原前，如果是sql语法致命错误，程序会直接停止运行，以上版本包括当前版本都无法回滚数据
-
-**还原不是使用 备份类备份的 sql 数据需要注意几点**
-<pre>
-1： 备份文件名前缀+ 标示名+数字.sql
-	<数字>0代表只还原这一个，数字从1依次还原多个
-  	标示名可以自定义 默认 $back_file_fu="_v";
-
-2: 备份文件的第一卷需要在 sql 文件的开头添加（标注）要还原的表名;
-   如果sql文件开头没有要还原的表名,调用 ImportData->import_exec() 函数添加最后一个参数$table_name=false;
-   如果想添加请在第一卷 注释 sql 的开头下面添加如下格式的表名：
-	    格式 -- ##* 表名|表名|表名 ##* --
-	    可以自定义格式  $import_table_fu=" ##* ";
-
-3：使用其他工具导出的 sql 文件需要查看表与表之间的分割符是否 Import.php 下的 table_fu() 函数定义的一致，
-   如果不一致，需要修改为一致，也可修改 table_fu() 函数的格式
-	< 防止sql 语句过大程序卡死 >
-	table_fu() 格式：
-		$create_table=PHP_EOL;
-		$create_table.='-- '.str_repeat('--',30).PHP_EOL;
-		$create_table.=PHP_EOL;
-</pre>
-
-#### import_2 版本
-	|---> 缺点：子类与父类中的函数属性调用调的地方都为 public 类型
-	|---> 优点：类与类之间的耦合性降低了
-	|---> 使用类调用
-
-#### 文件说明
-	import/    
-	|---Import.php 调用父类【基类】
-	|---PdoSql.php pdo类还原
-	|---MySql.php  mysql类还原
-	|---ImportData.php 还原数据实例化类
-	|---dome.php 调用测试文件
+    $optimize_repair=new OptimizeRepair($config);
+    $table=[];
+    $optimize_repair->optimize($table); // 优化表
+    $optimize_repair->repair($table);  // 修复表

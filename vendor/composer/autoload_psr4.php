@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'src\\' => array($baseDir . '/src'),
     'import\\' => array($baseDir . '/import'),
     'backup\\' => array($baseDir . '/backup'),
 );
