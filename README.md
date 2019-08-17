@@ -2,7 +2,7 @@
 重构代码，文件名不再支持中文名，中文可能乱码或压缩文件失败  
 数据库使用 PDO 连接，不再支持 MySql 连接  
 备份文件名定义 `Backup`  类中 `$this->dir_file_name` 属性定义，默认使用 年月日时(2019081719)   
-备份文件目录` Common` 类中 `$this->config['back_dir']`属性定义
+备份文件目录` Common` 类中 `$this->config['back_dir']`属性定义  
 公共配置项 ` Common` 类中 `$this->config`
 备份文件配置项 `Backup`  类中 `$this->back_config`  
 还原文件配置项 `Import` 类中 `$this->import_config` 
