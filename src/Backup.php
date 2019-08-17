@@ -14,12 +14,12 @@ use SplFileObject;
 class Backup extends Common
 {
     private $back_config=[
-        'subsection'=>5,			 // 分卷大小，单位MB
-        'min_subsection'=>2,       // 最小分卷数
-        'max_subsection'=>50,       // 最大分卷数
-        'compress'=> false,		 // 是否压缩，默认不压缩
-        'data_limit'=>10,           // 表数据每10 条统计一次是否达到分卷字数，如果为0表数据中不判断
-        'charset' =>'utf8',      // 字符集
+        'subsection'     => 5,             // 分卷大小，单位MB
+        'min_subsection' => 2,       // 最小分卷数
+        'max_subsection' => 50,       // 最大分卷数
+        'compress'       => false,         // 是否压缩，默认不压缩
+        'data_limit'     => 10,           // 表数据每10 条统计一次是否达到分卷字数，如果为0表数据中不判断
+        'charset'        => 'utf8',      // 字符集
     ];
 
     private $total_file_size=0; // 已写入文件的数据表数据字节数

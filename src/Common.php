@@ -13,12 +13,12 @@ namespace src;
 class Common
 {
     protected $config=[
-        'file_delimiter'=>'_',     // 分卷分割符,如果修改其他符号，文件名匹配正则需要修改
-        'file_extension'=>"sql",  // 备份文件后缀名
-        'compress_file_extension'=>'zip',// 压缩文件后缀
-        'import_lock_file'=>'import_lock_file.txt',// 导入锁文件名
-        'backup_lock_file'=>'backup_lock_file.txt',//备份锁文件
-        'back_dir'=>'./backup/',	 // 备份文件路径，备份
+        'file_delimiter'          => '_',     // 分卷分割符,如果修改其他符号，文件名匹配正则需要修改
+        'file_extension'          => "sql",  // 备份文件后缀名
+        'compress_file_extension' => 'zip',// 压缩文件后缀
+        'import_lock_file'        => 'import_lock_file.txt',// 导入锁文件名
+        'backup_lock_file'        => 'backup_lock_file.txt',//备份锁文件
+        'back_dir'                => './backup/',     // 备份文件路径，备份
     ];
     protected $db; // 数据库操作
 

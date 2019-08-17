@@ -15,8 +15,8 @@ use SplFileObject;
 class Import extends Common
 {
     private $import_config=[
-		'del_file'=>false,	 // 还原完数据库是否删除文件夹以及文件夹中所有文件,默认不删除
-        'read_size'=>8192       // 一次读取文件字节个数
+        'del_file'  => false,     // 还原完数据库是否删除文件夹以及文件夹中所有文件,默认不删除
+        'read_size' => 8192       // 一次读取文件字节个数
 	];
     private $read_file_size=0; // 总的已读文件字节数
     private $total_file_size=0;// 总文件大小

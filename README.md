@@ -21,30 +21,33 @@
     |--- Import.php     还原数据库类文件
     |--- OptimizeRepair.php 优化修复表类文件
 
-### 数据库配置项-----必传值
+### 配置项
     $config=[
-          'db'  =>  'web',           // 数据库名称    
-          'host'=>  '127.0.0.1',    // 主机
-          'dbuser'=>'root',         // 数据库用户名称
-          'dbpw'=>  'root',        // 数据库密码
-          'charset' =>'utf8',      // 字符集
+           // 数据库配置
+          'db'  =>  'web',           // 数据库名称        必传
+          'host'=>  '127.0.0.1',     // 主机              必传
+          'dbuser'=>'root',         // 数据库用户名称     必传
+          'dbpw'=>  'root',         // 数据库密码         必传
+          'charset' =>'utf8',       // 字符集
+          'timezone'=>'PRC',        // 时区
+          'prot'    => 3306,        // mysql 数据库端口号
           // 可以添加自定义配置项
           // 公共配置项
-          'file_delimiter'=>'_',     // 分卷分割符,如果修改其他符号，文件名匹配正则需要修改
-          'file_extension'=>"sql",  // 备份文件后缀名
-          'compress_file_extension'=>'zip',// 压缩文件后缀
-          'import_lock_file'=>'import_lock_file.txt',// 导入锁文件名
-          'backup_lock_file'=>'backup_lock_file.txt',//备份锁文件
-          'back_dir'=>'./backup/',	 // 备份文件路径，备份
+          'file_delimiter'          => '_',     // 分卷分割符,如果修改其他符号，文件名匹配正则需要修改
+          'file_extension'          => "sql",  // 备份文件后缀名
+          'compress_file_extension' => 'zip',// 压缩文件后缀
+          'import_lock_file'        => 'import_lock_file.txt',// 导入锁文件名
+          'backup_lock_file'        => 'backup_lock_file.txt',//备份锁文件
+          'back_dir'                => './backup/',     // 备份文件路径，备份
           // 备份配置项
-          'subsection'=>5,			 // 分卷大小，单位MB
-          'min_subsection'=>2,       // 最小分卷数
-          'max_subsection'=>50,       // 最大分卷数
-          'compress'=> false,		 // 是否压缩，默认不压缩
-          'data_limit'=>10,           // 表数据每10 条统计一次是否达到分卷字数，如果为0表数据中不判断
-          'charset' =>'utf8',      // 字符集
+          'subsection'     => 5,             // 分卷大小，单位MB
+          'min_subsection' => 2,       // 最小分卷数
+          'max_subsection' => 50,       // 最大分卷数
+          'compress'       => false,         // 是否压缩，默认不压缩
+          'data_limit'     => 10,           // 表数据每10 条统计一次是否达到分卷字数，如果为0表数据中不判断
+          'charset'        => 'utf8',      // 字符集
           // 还原配置项
-          'del_file'=>false,	 // 还原完数据库是否删除文件夹以及文件夹中所有文件,默认不删除
+          'del_file' =>false,	 // 还原完数据库是否删除文件夹以及文件夹中所有文件,默认不删除
           'read_size'=>8192       // 一次读取文件字节个数
     ];
     

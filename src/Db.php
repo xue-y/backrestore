@@ -14,14 +14,14 @@ use PDOException;
 class Db
 {
     private $pdo; // pdo 类对象
-    protected $config=[
-        'db'  =>  '',    // 数据库名称
-        'host'=>  '',    // 主机
-        'dbuser'=>'root',         // 数据库用户名称
-        'dbpw'=>  '',        // 数据库密码
-        'charset' =>'utf8',      // 字符集
-        'timezone'=>'PRC',
-        'prot'    => 3306,
+    protected $config = [
+        'db'       => '',       // 数据库名称
+        'host'     => '',       // 主机
+        'dbuser'   => 'root',  // 数据库用户名称
+        'dbpw'     => '',      // 数据库密码
+        'charset'  => 'utf8', // 字符集
+        'timezone' => 'PRC',
+        'prot'     => 3306,
     ];
 
     public function __construct($config=array())
